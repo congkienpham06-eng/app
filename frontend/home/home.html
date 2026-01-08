@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="../assets/css/app.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<!-- FLOATING ADD ROOM BUTTON -->
+
 <div class="app">
   <div class="dynamic-island"></div>
   <div class="status-bar">
@@ -15,16 +17,30 @@
       </span>
     </div>
   </div>
-  <header>Đăng nhập</header>
-  <div class="content">
-    <input id="username" placeholder="Tên đăng nhập">
-    <input id="password" placeholder="Mật khẩu">
-    <button onclick="login()">Đăng nhập</button>
-    <button onclick="location.href='../register/register.html'">Đăng ký</button>
+
+  <header class="header-with-back">
+    <span class="title">Trang chủ</span>
+  </header>
+
+
+  <div class="content" id="list"></div>
+
+  <div class="bottom-nav">
+    <a href="home.html">🏠</a>
+    <a href="../search/search.html">🔍</a>
+    <a href="../favorite/favorite.html">❤️</a>
+    <a href="../profile/profile.html">👤</a>
   </div>
+  <button class="add-room-btn" onclick="goPostRoom()">＋</button>
 </div>
 
-<script src="login.js"></script>
+<script src="home.js"></script>
+<script>
+function goPostRoom() {
+  window.location.href = "../post/post.html";
+}
+
+</script>
 
 <script>
 function updateTime() {
@@ -36,3 +52,4 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 60000);
 </script>
+

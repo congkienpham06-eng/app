@@ -15,16 +15,22 @@
       </span>
     </div>
   </div>
-  <header>Đăng nhập</header>
+
+  <header class="header-with-back">
+    <span class="back-btn" onclick="window.history.back()">←</span>
+    <span class="title">Đăng ký</span>
+    <span class="spacer"></span>
+  </header>
+
   <div class="content">
     <input id="username" placeholder="Tên đăng nhập">
     <input id="password" placeholder="Mật khẩu">
-    <button onclick="login()">Đăng nhập</button>
-    <button onclick="location.href='../register/register.html'">Đăng ký</button>
+    <input id="fname" placeholder="Tên hiển thị">
+    <button onclick="register()">Đăng ký</button>
+    <button onclick="location.href='../login/login.html'">Đăng nhập</button>
   </div>
 </div>
-
-<script src="login.js"></script>
+<script src="register.js"></script>
 
 <script>
 function updateTime() {
