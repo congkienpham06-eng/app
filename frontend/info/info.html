@@ -5,35 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <title>Thông tin phòng</title>
   <link rel="stylesheet" href="../assets/css/app.css">
+  <style>
+    /* Lightbox ảnh */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .lightbox.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
   <div class="app">
     <div class="dynamic-island"></div>
     <div class="status-bar">
-      <div class="status-left">
-        <span id="time">9:41</span>
-      </div>
-
+      <div class="status-left"><span id="time">9:41</span></div>
       <div class="status-right">
         <span class="signal">📶</span>
         <span class="wifi">📡</span>
-        <span class="battery">
-          🔋<span class="battery-percent">100%</span>
-        </span>
+        <span class="battery">🔋<span class="battery-percent">100%</span></span>
       </div>
     </div>
+
     <header class="header-with-back">
       <span class="back-btn" onclick="window.history.back()">←</span>
       <span class="title">Thông tin phòng</span>
       <span class="spacer"></span>
     </header>
 
-
     <div class="content" id="roomInfo">
       <!-- JS render -->
     </div>
-
 
     <div class="bottom-nav">
       <a href="../home/home.html">🏠</a>
@@ -43,16 +71,27 @@
     </div>
   </div>
 
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <span class="lightbox-close" onclick="closeLightbox()">✖</span>
+    <img id="lightbox-img" src="">
+  </div>
+
   <script src="info.js"></script>
   <script>
-  function updateTime() {
-    const now = new Date();
-    const h = now.getHours().toString().padStart(2,'0');
-    const m = now.getMinutes().toString().padStart(2,'0');
-    document.getElementById("time").innerText = `${h}:${m}`;
-  }
-  updateTime();
-  setInterval(updateTime, 60000);
+    function updateTime() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2,'0');
+      const m = now.getMinutes().toString().padStart(2,'0');
+      document.getElementById("time").innerText = `${h}:${m}`;
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    // Hàm đóng lightbox
+    function closeLightbox() {
+      document.getElementById("lightbox").classList.remove("show");
+    }
   </script>
 </body>
 </html>

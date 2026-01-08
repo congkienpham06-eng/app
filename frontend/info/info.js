@@ -21,8 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const owner = users.find(u => u.username === room.owner);
   const ownerName = owner ? (owner.fname || owner.username) : "Không rõ";
 
+  // Render phòng
   container.innerHTML = `
-    ${room.image ? `<img src="${room.image}" class="room-img">` : ""}
+    ${room.image ? `<img src="${room.image}" class="room-img" id="roomImg">` : ""}
     <div class="card">
       <h3>${room.title}</h3>
       <p><b>Giá:</b> ${room.price} VND</p>
@@ -33,19 +34,30 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
-  // Nút Thuê: chỉ ẩn với chính chủ
+  // Nếu không phải chủ, thêm nút thuê
   if (room.owner !== currentUser) {
     const rentBtn = document.createElement("button");
     rentBtn.innerText = "Thuê phòng";
     rentBtn.onclick = () => {
-      // không đánh dấu rentedBy tại đây
       sessionStorage.setItem("paymentRoomId", room.id);
       location.href = "../payment/payment.html";
     };
     container.appendChild(rentBtn);
   }
 
-  // Hàm ưa thích
+  // Thêm click vào ảnh để phóng to
+  const roomImg = document.getElementById("roomImg");
+  if (roomImg) {
+    roomImg.style.cursor = "zoom-in";
+    roomImg.addEventListener("click", () => {
+      const lb = document.getElementById("lightbox");
+      const lbImg = document.getElementById("lightbox-img");
+      lbImg.src = roomImg.src;
+      lb.classList.add("show");
+    });
+  }
+
+  // Nút ưa thích
   window.fav = function() {
     const favs = JSON.parse(localStorage.getItem("favorites")) || {};
     favs[currentUser] = favs[currentUser] || [];
