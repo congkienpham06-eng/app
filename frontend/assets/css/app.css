@@ -399,3 +399,8 @@ textarea:focus {
   line-height: 1.4;
 }
 
+.content1 {
+  flex: 1;
+  padding: 240px 12px 70px 12px; /* top right bottom left */
+  overflow-y: auto;
+}
