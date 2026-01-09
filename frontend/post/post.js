@@ -8,29 +8,45 @@ const price = document.getElementById("price");
 const image = document.getElementById("image");
 const mota = document.getElementById("mota");
 const preview = document.getElementById("preview");
+const imageCount = document.getElementById("imageCount");
 
-// === Preview ảnh ===
+// === Preview ảnh (chỉ ảnh đầu + đếm số ảnh) ===
 image.onchange = () => {
-  const file = image.files[0];
-  if (!file) return;
+  const files = image.files;
+
+  if (!files.length) {
+    preview.style.display = "none";
+    imageCount.innerText = "";
+    return;
+  }
+
+  if (files.length > 10) {
+    alert("Chỉ được chọn tối đa 10 ảnh");
+    image.value = "";
+    preview.style.display = "none";
+    imageCount.innerText = "";
+    return;
+  }
+
+  imageCount.innerText = `Đã chọn ${files.length} / 10 ảnh`;
 
   const reader = new FileReader();
   reader.onload = () => {
     preview.src = reader.result;
     preview.style.display = "block";
   };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(files[0]);
 };
 
 // === Load address.json ===
 let addressData = {};
+
 fetch("../assets/data/address.json")
   .then(res => res.json())
   .then(data => {
     addressData = data;
     loadCities();
-  })
-  .catch(err => console.error("Lỗi load địa chỉ:", err));
+  });
 
 // Load tỉnh
 function loadCities() {
@@ -50,7 +66,7 @@ function loadDistricts() {
   });
 }
 
-// Ward nhập tay, chỉ reset placeholder
+// Ward nhập tay
 function loadWards() {
   wardInput.value = "";
 }
@@ -69,59 +85,78 @@ function postRoom() {
     return;
   }
 
-  const file = image.files[0];
-  if (!file) {
+  const files = image.files;
+  if (!files.length) {
     alert("Vui lòng chọn ảnh");
     return;
   }
 
-  const img = new Image();
-  const reader = new FileReader();
+  const compressedImages = [];
+  let processed = 0;
 
-  reader.onload = function(e) {
-    img.src = e.target.result;
-  };
+  Array.from(files).forEach(file => {
+    const img = new Image();
+    const reader = new FileReader();
 
-  img.onload = function() {
-    const canvas = document.createElement("canvas");
-    const MAX_WIDTH = 800;
-    const scale = MAX_WIDTH / img.width;
+    reader.onload = e => img.src = e.target.result;
 
-    canvas.width = MAX_WIDTH;
-    canvas.height = img.height * scale;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const MAX_WIDTH = 800;
+      const scale = MAX_WIDTH / img.width;
 
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scale;
 
-    const compressedImage = canvas.toDataURL("image/jpeg", 0.6);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    const rooms = JSON.parse(localStorage.getItem("rooms")) || [];
-    const currentUser = localStorage.getItem("currentUser");
+      compressedImages.push(
+        canvas.toDataURL("image/jpeg", 0.6)
+      );
 
-    rooms.push({
-      id: Date.now(),
-      title: title.value,
-      city: citySelect.value,
-      district: districtSelect.value,
-      ward: wardInput.value,
-      detail: detailAddress.value,
-      address: `${detailAddress.value}, ${wardInput.value}, ${districtSelect.value}, ${citySelect.value}`,
-      price: price.value,
-      image: compressedImage,
-      mota: mota.value,
-      owner: currentUser,
-      rentedBy: null,
-      paid: false
-    });
+      processed++;
+      if (processed === files.length) {
+        saveRoom(compressedImages);
+      }
+    };
 
-    try {
-      localStorage.setItem("rooms", JSON.stringify(rooms));
-      alert("Đăng phòng thành công");
-      location.href = "../home/home.html";
-    } catch(e) {
-      alert("Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn");
-    }
-  };
+    reader.readAsDataURL(file);
+  });
+}
 
-  reader.readAsDataURL(file);
+// === Lưu phòng ===
+function saveRoom(images) {
+  const rooms = JSON.parse(localStorage.getItem("rooms")) || [];
+  const currentUser = localStorage.getItem("currentUser");
+
+  rooms.push({
+    id: Date.now(),
+    title: title.value,
+    city: citySelect.value,
+    district: districtSelect.value,
+    ward: wardInput.value,
+    detail: detailAddress.value,
+    address: `${detailAddress.value}, ${wardInput.value}, ${districtSelect.value}, ${citySelect.value}`,
+    price: price.value,
+
+    // nhiều ảnh
+    images: images,
+
+    // ảnh đại diện
+    image: images[0],
+
+    mota: mota.value,
+    owner: currentUser,
+    rentedBy: null,
+    paid: false
+  });
+
+  try {
+    localStorage.setItem("rooms", JSON.stringify(rooms));
+    alert("Đăng phòng thành công");
+    location.href = "../home/home.html";
+  } catch (e) {
+    alert("Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn");
+  }
 }

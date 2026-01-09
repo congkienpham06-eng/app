@@ -399,6 +399,96 @@ textarea:focus {
   line-height: 1.4;
 }
 
+/* ===== OWNER CLICKABLE ===== */
+.owner-name {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.owner-name:hover {
+  text-decoration: underline;
+}
+
+/* ===== REVIEW ===== */
+.review {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.review b {
+  color: #2563eb;
+}
+
+/* ===== OWNER INFO CARD ===== */
+.owner-card {
+  background: #f9f9f9;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.star-rate span {
+  font-size: 28px;
+  cursor: pointer;
+  opacity: 0.3;
+}
+
+.img-preview img,
+.review-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 4px;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  z-index: 999;
+}
+
+.lightbox img {
+  max-width: 80%;
+  max-height: 80%;
+  margin: auto;
+}
+
+.lightbox span {
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+}
+
+.lightbox .close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.owner-link {
+  color: #0b5ed7; /* xanh dương */
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.owner-link:hover {
+  opacity: 0.8;
+}
+
 .content1 {
   flex: 1;
   padding: 240px 12px 70px 12px; /* top right bottom left */

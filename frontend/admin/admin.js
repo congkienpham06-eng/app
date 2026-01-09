@@ -3,14 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const nameEl = document.getElementById("name");
   const phone = document.getElementById("phone");
   const email = document.getElementById("email");
-  const bank = document.getElementById("bank");
   const img = document.getElementById("img");
 
   const users = JSON.parse(localStorage.getItem("users")) || [];
   const username = localStorage.getItem("currentUser");
+  const role = localStorage.getItem("currentRole");
 
-  if (!username) {
-    alert("Vui lòng đăng nhập");
+  if (!username || role !== "admin") {
+    alert("Bạn không có quyền truy cập");
     location.href = "../login/login.html";
     return;
   }
@@ -23,11 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // ===== Load dữ liệu profile =====
+  // Load dữ liệu profile
   nameEl.innerText = user.fname || user.username;
   phone.value = user.phone || "";
   email.value = user.email || "";
-  bank.value = user.bank || "";
   avatar.src = user.avatar || "../assets/img/default-avatar.png";
 
   avatar.onclick = () => img.click();
@@ -35,17 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
   img.onchange = () => {
     const file = img.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = () => avatar.src = reader.result;
     reader.readAsDataURL(file);
   };
 
-  // ===== Lưu profile =====
-  window.save = function () {
+  window.save = function() {
     user.phone = phone.value;
     user.email = email.value;
-    user.bank = bank.value;
 
     if (img.files[0]) {
       const reader = new FileReader();
@@ -61,38 +57,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ===== Logout =====
-  window.logout = function () {
+  window.logout = function() {
     sessionStorage.clear();
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentRole");
     location.href = "../login/login.html";
   };
 
-  // ===== Đổi mật khẩu =====
-  window.changePassword = function() {
-    const current = document.getElementById("currentPass").value.trim();
-    const newPass = document.getElementById("newPass").value.trim();
-    const confirmPass = document.getElementById("confirmPass").value.trim();
+  // ===== Chức năng admin =====
+  window.addAdmin = function() {
+    const newUsername = prompt("Nhập username admin mới:");
+    if (!newUsername) return alert("Tên không hợp lệ");
+    const exists = users.some(u => u.username === newUsername);
+    if (exists) return alert("Tài khoản đã tồn tại");
 
-    if (!current || !newPass || !confirmPass) {
-      return alert("Vui lòng điền đầy đủ thông tin");
-    }
-
-    if (current !== user.password) {
-      return alert("Mật khẩu hiện tại không đúng");
-    }
-
-    if (newPass !== confirmPass) {
-      return alert("Xác nhận mật khẩu không khớp");
-    }
-
-    user.password = newPass;
+    const newAdmin = {
+      username: newUsername,
+      password: "admin123",
+      role: "admin",
+      fname: "Admin mới"
+    };
+    users.push(newAdmin);
     localStorage.setItem("users", JSON.stringify(users));
-    alert("Đổi mật khẩu thành công");
+    alert(`Đã tạo tài khoản admin: ${newUsername} (mật khẩu mặc định: admin123)`);
+  };
 
-    // Xóa input sau khi đổi
-    document.getElementById("currentPass").value = "";
-    document.getElementById("newPass").value = "";
-    document.getElementById("confirmPass").value = "";
+  window.manageComplaints = function() {
+    location.href = "../admin/manage-complaints.html"; // bạn tạo page quản lý khiếu nại
+  };
+
+  window.manageRooms = function() {
+    location.href = "../admin/manage-rooms.html"; // page quản lý phòng đăng
+  };
+
+  window.manageUsers = function() {
+    location.href = "../admin/manage-users.html"; // page quản lý tất cả user
   };
 });
