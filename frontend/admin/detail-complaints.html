@@ -15,6 +15,9 @@
 #lightbox .nav { position:absolute; top:50%; transform:translateY(-50%); font-size:36px; color:white; cursor:pointer; user-select:none; }
 #lightbox .nav.left { left:20px; }
 #lightbox .nav.right { right:20px; }
+.action-btn { padding:6px 12px; margin:4px; border:none; border-radius:6px; cursor:pointer; }
+.approve { background:green; color:white; }
+.reject { background:red; color:white; }
 </style>
 </head>
 <body>
@@ -31,8 +34,8 @@
     <span class="spacer"></span>
   </header>
 
-  <div class="content" id="complaintDetail">
-    <!-- Chi tiết khiếu nại sẽ hiển thị ở đây -->
+  <div class="content" id="complaintDetailContainer">
+    <!-- Thông tin chi tiết sẽ hiển thị ở đây -->
   </div>
 
   <!-- LIGHTBOX -->
@@ -45,6 +48,6 @@
 
 </div>
 
-<script src="complaint-detail.js"></script>
+<script src="detail-complaints.js"></script>
 </body>
 </html>
