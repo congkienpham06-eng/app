@@ -1,44 +1,36 @@
-<link rel="stylesheet" href="../assets/css/app.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<div class="app">
-  <div class="dynamic-island"></div>
-  <div class="status-bar">
-    <div class="status-left">
-      <span id="time">9:41</span>
-    </div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Test Đăng Ký Hệ Thống</title>
+</head>
+<body>
+    <h2>Đăng ký thành viên mới</h2>
+    <form id="regForm">
+        Họ tên: <input type="text" id="HoTen" required><br><br>
+        Tài khoản: <input type="text" id="TaiKhoan" required><br><br>
+        Mật khẩu: <input type="password" id="MatKhau" required><br><br>
+        Email: <input type="email" id="Email" required><br><br>
+        <button type="submit">Gửi Đăng Ký</button>
+    </form>
 
-    <div class="status-right">
-      <span class="signal">📶</span>
-      <span class="wifi">📡</span>
-      <span class="battery">
-        🔋<span class="battery-percent">100%</span>
-      </span>
-    </div>
-  </div>
+    <script>
+        document.getElementById('regForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                HoTen: document.getElementById('HoTen').value,
+                TaiKhoan: document.getElementById('TaiKhoan').value,
+                MatKhau: document.getElementById('MatKhau').value,
+                Email: document.getElementById('Email').value
+            };
 
-  <header class="header-with-back">
-    <span class="back-btn" onclick="window.history.back()">←</span>
-    <span class="title">Đăng ký</span>
-    <span class="spacer"></span>
-  </header>
-
-  <div class="content1">
-    <input id="username" placeholder="Tên đăng nhập">
-    <input id="password" placeholder="Mật khẩu">
-    <input id="fname" placeholder="Tên hiển thị">
-    <button onclick="register()">Đăng ký</button>
-    <button onclick="location.href='../login/login.html'">Đăng nhập</button>
-  </div>
-</div>
-<script src="register.js"></script>
-
-<script>
-function updateTime() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2,'0');
-  const m = now.getMinutes().toString().padStart(2,'0');
-  document.getElementById("time").innerText = `${h}:${m}`;
-}
-updateTime();
-setInterval(updateTime, 60000);
-</script>
+            const res = await fetch('http://localhost:5000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            alert(result.message || "Đã gửi yêu cầu!");
+        };
+    </script>
+</body>
+</html>

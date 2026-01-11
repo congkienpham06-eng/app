@@ -1,42 +1,62 @@
-<link rel="stylesheet" href="../assets/css/app.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<div class="app">
-  <div class="dynamic-island"></div>
-  <div class="status-bar">
-    <div class="status-left">
-      <span id="time">9:41</span>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập hệ thống</title>
+    <style>
+        /* Đoạn này giúp giao diện giống hình image_4116b0.png của bạn */
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; padding-top: 50px; background-color: #f4f4f4; }
+        .login-container { width: 350px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header { background-color: #3b71db; color: white; text-align: center; padding: 20px; font-size: 24px; font-weight: bold; }
+        .form-body { padding: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-login { background-color: #3b71db; color: white; }
+        .btn-register { background-color: transparent; color: #3b71db; border: 1px solid #3b71db; }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="header">Đăng nhập</div>
+    <div class="form-body">
+        <input type="text" id="TaiKhoan" placeholder="Tên đăng nhập">
+        <input type="password" id="MatKhau" placeholder="Mật khẩu">
+        
+        <button class="btn btn-login" onclick="handleLogin()">Đăng nhập</button>
+        <button class="btn btn-register" onclick="window.location.href='register.html'">Đăng ký</button>
     </div>
-
-    <div class="status-right">
-      <span class="signal">📶</span>
-      <span class="wifi">📡</span>
-      <span class="battery">
-        🔋<span class="battery-percent">100%</span>
-      </span>
-    </div>
-  </div>
-
-  <header class="header-with-back">
-    <span class="title">Đăng nhập</span>
-  </header>
-
-  <div class="content1">
-    <input id="username" placeholder="Tên đăng nhập">
-    <input id="password" placeholder="Mật khẩu">
-    <button onclick="login()">Đăng nhập</button>
-    <button onclick="location.href='../register/register.html'">Đăng ký</button>
-  </div>
 </div>
 
-<script src="login.js"></script>
-
 <script>
-function updateTime() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2,'0');
-  const m = now.getMinutes().toString().padStart(2,'0');
-  document.getElementById("time").innerText = `${h}:${m}`;
-}
-updateTime();
-setInterval(updateTime, 60000);
+    async function handleLogin() {
+        const TaiKhoan = document.getElementById('TaiKhoan').value;
+        const MatKhau = document.getElementById('MatKhau').value;
+
+        try {
+            // Gọi đến API trong server.js của bạn
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ TaiKhoan, MatKhau })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Đăng nhập thành công! Chào mừng " + result.user.HoTen);
+                // Sau khi đăng nhập xong, có thể chuyển về trang chủ hoặc lưu session
+                console.log("Dữ liệu người dùng:", result.user);
+            } else {
+                alert("Lỗi: " + result.message);
+            }
+        } catch (error) {
+            console.error("Lỗi kết nối:", error);
+            alert("Không thể kết nối đến server!");
+        }
+    }
 </script>
+
+</body>
+</html>
